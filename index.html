@@ -364,72 +364,41 @@ generating code snippets, and translating code between languages.
 </footer>
 
 <script>
-async function runCode() {
-  const code = document.getElementById("editor").value;
-  const language = document.getElementById("language").value;
-  const output = document.getElementById("output");
-
-  try {
-    if (language === "javascript") {
-      // Direct JavaScript execution
-      let result = "";
-      const originalLog = console.log;
-      console.log = function(...args) {
-        result += args.join(" ") + "\n";
-      };
-      
-      eval(code);
-      
-      console.log = originalLog;
-      output.textContent = result || "✓ Code executed successfully (no output)";
-    } else {
-      output.textContent = `⚠️ Backend required for ${language} execution.`;
-    }
-  } catch (error) {
-    output.textContent = `❌ Error: ${error.message}`;
-  }
-}
-
 async function translateCode() {
-  const code = document.getElementById("editor").value;
-  const language = document.getElementById("language").value;
-  const output = document.getElementById("output");
 
-  try {
-    if (!code.trim()) {
-      output.textContent = "⚠️ Please enter some code to translate.";
-      return;
-    }
+const code =
+document.getElementById("editor").value;
 
-    // Try to use backend if available
-    try {
-      const response = await fetch("http://localhost:3000/translate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          code,
-          source: language,
-          target: language === "javascript" ? "python" : "javascript"
-        })
-      });
+try {
 
-      if (response.ok) {
-        const data = await response.json();
-        output.textContent = data.translated || "Translation pending...";
-      } else {
-        output.textContent = "💡 Backend not available. Connect your server for live translation.";
-      }
-    } catch (error) {
-      output.textContent = "💡 Backend not available. Connect your server at localhost:3000 for live translation.";
-    }
-  } catch (error) {
-    output.textContent = `❌ Error: ${error.message}`;
-  }
+const response = await fetch(
+"http://localhost:3000/translate",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+code: code,
+source:"javascript",
+target:"python"
+})
+}
+);
+
+const data = await response.json();
+
+document.getElementById("output").textContent =
+data.translated;
+
+}
+catch(err){
+
+document.getElementById("output").textContent =
+"Cannot connect to backend: " + err.message;
+
 }
 
-function clearCode() {
-  document.getElementById("editor").value = "";
-  document.getElementById("output").textContent = "";
 }
 </script>
 
