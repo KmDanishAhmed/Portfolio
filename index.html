@@ -1,6 +1,206 @@
-git init
-git add .
-git commit -m "Initial portfolio"
-git branch -M main
-git remote add origin https://github.com/KmDanishAhmed/portfolio.git
-git push -u origin main
+cat > index.html <<'EOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Danish Ahmed KM | Portfolio</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Arial,sans-serif;
+  background:#0b1120;
+  color:#fff;
+}
+
+nav{
+  position:fixed;
+  width:100%;
+  background:#111827;
+  padding:15px;
+  text-align:center;
+  z-index:1000;
+}
+
+nav a{
+  color:white;
+  text-decoration:none;
+  margin:0 15px;
+  font-weight:bold;
+}
+
+nav a:hover{
+  color:#38bdf8;
+}
+
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:20px;
+}
+
+.hero h1{
+  font-size:3rem;
+  color:#38bdf8;
+}
+
+.hero p{
+  margin-top:15px;
+  max-width:600px;
+}
+
+.btn{
+  margin-top:25px;
+  padding:12px 24px;
+  border:none;
+  border-radius:8px;
+  background:#38bdf8;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+section{
+  padding:80px 20px;
+  max-width:1100px;
+  margin:auto;
+}
+
+h2{
+  text-align:center;
+  margin-bottom:30px;
+  color:#38bdf8;
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:#1e293b;
+  padding:20px;
+  border-radius:12px;
+  transition:.3s;
+}
+
+.card:hover{
+  transform:translateY(-8px);
+}
+
+.skills{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:15px;
+}
+
+.skill{
+  background:#1e293b;
+  padding:10px 20px;
+  border-radius:20px;
+}
+
+.contact{
+  text-align:center;
+}
+
+footer{
+  background:#111827;
+  text-align:center;
+  padding:20px;
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+<a href="#about">About</a>
+<a href="#skills">Skills</a>
+<a href="#projects">Projects</a>
+<a href="#contact">Contact</a>
+</nav>
+
+<div class="hero">
+<h1>Danish Ahmed KM</h1>
+<p>Developer • Web Enthusiast • Technology Explorer</p>
+<button class="btn"
+onclick="document.getElementById('projects').scrollIntoView()">
+View Projects
+</button>
+</div>
+
+<section id="about">
+<h2>About Me</h2>
+<p style="text-align:center">
+Welcome to my portfolio website. I enjoy creating websites,
+learning new technologies, and building useful digital products.
+</p>
+</section>
+
+<section id="skills">
+<h2>Skills</h2>
+
+<div class="skills">
+<div class="skill">HTML</div>
+<div class="skill">CSS</div>
+<div class="skill">JavaScript</div>
+<div class="skill">Node.js</div>
+<div class="skill">Git</div>
+<div class="skill">Web Development</div>
+</div>
+
+</section>
+
+<section id="projects">
+<h2>Projects</h2>
+
+<div class="cards">
+
+<div class="card">
+<h3>Portfolio Website</h3>
+<p>Personal portfolio hosted from Android using Termux.</p>
+</div>
+
+<div class="card">
+<h3>Business Website</h3>
+<p>Responsive business landing page design.</p>
+</div>
+
+<div class="card">
+<h3>Crypto Dashboard</h3>
+<p>Live cryptocurrency tracking dashboard.</p>
+</div>
+
+</div>
+
+</section>
+
+<section id="contact">
+<h2>Contact</h2>
+
+<div class="contact">
+<p>Email: danishahmed0123200@gmail.com</p>
+<p>GitHub: github.com/KmDanishAhmed</p>
+</div>
+
+</section>
+
+<footer>
+© 2026 Danish Ahmed KM
+</footer>
+
+</body>
+</html>
+EOF
