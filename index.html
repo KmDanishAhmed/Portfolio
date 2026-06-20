@@ -98,11 +98,18 @@ h2{
   transform:translateY(-8px);
 }
 
-.skills{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:15px;
+.skill{
+  background:#1e293b;
+  padding:10px 20px;
+  border-radius:20px;
+  color:white;
+  text-decoration:none;
+  display:inline-block;
+}
+
+.skill:hover{
+  background:#38bdf8;
+  color:black;
 }
 
 .skill{
@@ -129,11 +136,12 @@ footer{
 <a href="#about">About</a>
 <a href="#skills">Skills</a>
 <a href="#projects">Projects</a>
+<a href="#code-engine">Code Engine</a>
 <a href="#contact">Contact</a>
 </nav>
 
 <div class="hero">
-<h1>Danish Ahmed KM</h1>
+<h1>Km Danish Ahmed</h1>
 <p>Developer • Web Enthusiast • Technology Explorer</p>
 <button class="btn"
 onclick="document.getElementById('projects').scrollIntoView()">
