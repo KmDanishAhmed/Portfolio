@@ -166,6 +166,7 @@ h2{
   margin-top:15px;
   border:1px solid #38bdf8;
   min-height:50px;
+  white-space:pre-wrap;
 }
 
 .editor-buttons{
@@ -364,41 +365,102 @@ generating code snippets, and translating code between languages.
 </footer>
 
 <script>
+async function runCode() {
+  const code = document.getElementById("editor").value;
+  const language = document.getElementById("language").value;
+  const output = document.getElementById("output");
+
+  try {
+    if (language === "javascript") {
+      // Direct JavaScript execution
+      let result = "";
+      const originalLog = console.log;
+      console.log = function(...args) {
+        result += args.join(" ") + "\n";
+      };
+      
+      eval(code);
+      
+      console.log = originalLog;
+      output.textContent = result || "✓ Code executed successfully (no output)";
+    } else {
+      output.textContent = `⚠️ Backend required for ${language} execution.`;
+    }
+  } catch (error) {
+    output.textContent = `❌ Error: ${error.message}`;
+  }
+}
+
 async function translateCode() {
+  const editor = document.getElementById("editor");
+  const languageSelect = document.getElementById("language");
+  const output = document.getElementById("output");
+  const buttons = document.querySelectorAll('.editor-buttons button');
 
-const code =
-document.getElementById("editor").value;
+  const code = editor.value || "";
+  const source = languageSelect.value || "javascript";
+  const target = source === "javascript" ? "python" : "javascript";
 
-try {
+  if (!code.trim()) {
+    output.textContent = "⚠️ Please enter some code to translate.";
+    return;
+  }
 
-const response = await fetch(
-"http://localhost:3000/translate",
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-code: code,
-source:"javascript",
-target:"python"
-})
+  // Disable buttons while request is in progress
+  buttons.forEach(b => b.disabled = true);
+  output.textContent = '⏳ Translating...';
+
+  const controller = new AbortController();
+  const timeoutMs = 10000; // 10 seconds
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const resp = await fetch('http://localhost:3000/translate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, source, target }),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!resp.ok) {
+      // Try to extract any error message body
+      let bodyText = '';
+      try { bodyText = await resp.text(); } catch (e) { /* ignore */ }
+      throw new Error(`Server responded with ${resp.status} ${resp.statusText}${bodyText ? ': ' + bodyText : ''}`);
+    }
+
+    // Parse JSON safely
+    let data;
+    try {
+      data = await resp.json();
+    } catch (e) {
+      throw new Error('Invalid JSON received from translation server.');
+    }
+
+    if (!data || typeof data.translated !== 'string') {
+      throw new Error('Translation server returned unexpected response.');
+    }
+
+    output.textContent = data.translated;
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      output.textContent = `❌ Request timed out after ${timeoutMs/1000}s.`;
+    } else if (err.message && err.message.includes('Failed to fetch')) {
+      output.textContent = '❌ Cannot connect to backend. Is the server running and CORS configured?';
+    } else {
+      output.textContent = '❌ ' + err.message;
+    }
+  } finally {
+    clearTimeout(timeoutId);
+    buttons.forEach(b => b.disabled = false);
+  }
 }
-);
 
-const data = await response.json();
-
-document.getElementById("output").textContent =
-data.translated;
-
-}
-catch(err){
-
-document.getElementById("output").textContent =
-"Cannot connect to backend: " + err.message;
-
-}
-
+function clearCode() {
+  document.getElementById("editor").value = "";
+  document.getElementById("output").textContent = "";
 }
 </script>
 
